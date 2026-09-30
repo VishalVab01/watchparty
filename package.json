@@ -1,0 +1,51 @@
+{
+  "name": "watchparty",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "mkdir -p .local && pglite-server --db=./.local/postgres --port=5433 --host=127.0.0.1 --run=\"npm run dev:services\" --include-database-url",
+    "dev:services": "concurrently \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:postgres": "npm run dev:services",
+    "dev:client": "vite --host 0.0.0.0",
+    "dev:server": "tsx watch server/index.ts",
+    "build": "npm run typecheck && tsc -p tsconfig.server.json --noEmit false --outDir dist-server --rootDir server && vite build",
+    "start": "node dist-server/index.js",
+    "db:init": "tsx server/db/init.ts",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit --pretty false && tsc -p tsconfig.server.json --noEmit --pretty false"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "gsap": "^3.14.2",
+    "lucide-react": "^0.468.0",
+    "nanoid": "^5.1.0",
+    "pg": "^8.13.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite-socket": "^0.2.11",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.7"
+  }
+}
