@@ -10,10 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: CLIENT_ORIGIN
-        fromService:
-          name: watchparty
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
+        value: https://watchparty-fl0x.onrender.com
       - key: DATABASE_SSL
         value: "false"
       - key: DATABASE_URL
