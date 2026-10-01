@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Copy, Crown, Link2, LoaderCircle, LockKeyhole, LogOut, Menu, MessageCircle, Pause, Play, Plus, Send, Sparkles, Users, X } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { gsap } from 'gsap';
@@ -165,7 +166,7 @@ export default function App() {
           <div className="folio-nav-actions"><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={() => setModal('create')}>♥ &nbsp; START A PARTY</button></div>
           <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         </header>
-        <div className="folio-ruler" aria-hidden="true"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span><span>700</span><span>800</span><span>900</span><span>1000</span><span>1100</span><span>1200</span><span>1300</span><span>1400</span><span>1500</span></div>
+        <FilmReel />
         <main id="top" className="folio-main">
           <section className="folio-hero" aria-label="Watchparty home">
             <FolioClock />
@@ -186,6 +187,31 @@ export default function App() {
       {modal && <EntryModal mode={modal} onClose={() => { setModal(null); setFeaturedVideoId(null); }} onComplete={(s) => { storeSession(s); setEnteredSession(s); navigateRoom(s.code); }} />}
       {toast && <Toast text={toast} />}
     </>}
+  </div>;
+}
+
+function FilmReel() {
+  const track = useRef<HTMLDivElement>(null);
+  const moveTo = useRef<((value: number) => void) | null>(null);
+  useEffect(() => {
+    if (!track.current) return;
+    moveTo.current = gsap.quickTo(track.current, 'x', { duration: 0.45, ease: 'power3.out' });
+    return () => { moveTo.current = null; };
+  }, []);
+  const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const progress = (event.clientX - bounds.left) / bounds.width;
+    moveTo.current?.((0.5 - progress) * Math.min(190, bounds.width * 0.22));
+  };
+  const frames = [
+    ['▶', 'mint'], ['WP', 'cream'], ['✳', 'pink'], ['PLAY', 'yellow'], ['♥', 'blue'],
+    ['YOU', 'cream'], ['▶', 'pink'], ['TOGETHER', 'mint'], ['✦', 'yellow'], ['WP', 'blue'],
+    ['REPLAY', 'cream'], ['♥', 'pink'], ['▶', 'mint'], ['WATCH', 'yellow'], ['✳', 'blue'],
+  ];
+  return <div className="folio-filmreel" aria-label="Decorative film reel that follows your pointer" onPointerMove={onPointerMove} onPointerLeave={() => moveTo.current?.(0)}>
+    <div className="film-track" ref={track} aria-hidden="true">
+      {[...frames, ...frames].map(([label, tone], index) => <span className={`film-frame film-${tone}`} key={`${label}-${index}`}>{label}</span>)}
+    </div>
   </div>;
 }
 
