@@ -346,14 +346,15 @@ function FeaturedWork({ onStream }: { onStream: (videoId: string) => void }) {
 }
 
 function FlowerContact({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => void }) {
-  const flower = useRef<SVGSVGElement>(null);
-  useEffect(() => {
-    if (!flower.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const spin = gsap.to(flower.current, { rotation: 360, duration: 1.6, ease: 'power2.inOut', repeat: -1, repeatDelay: 2.5, transformOrigin: '50% 50%' });
-    return () => { spin.kill(); };
-  }, []);
   return <section className="flower-contact" aria-labelledby="flower-contact-title">
-    <div className="flower-art" aria-hidden="true"><svg ref={flower} viewBox="0 0 260 260" role="presentation"><path d="M130 17C167-7 210 7 220 43c9 32-8 58-31 87 29 24 55 54 46 88-10 39-56 47-105 17-42 31-91 32-112 1-21-31-6-70 28-106C13 99 1 57 25 27 49-3 88 2 130 17Z" fill="#2cbd88" stroke="#111" strokeWidth="2" strokeLinejoin="round"/><g><rect x="129" y="99" width="49" height="15" rx="8" fill="#111" transform="rotate(-12 129 99)"/><rect x="134" y="137" width="49" height="15" rx="8" fill="#111" transform="rotate(-12 134 137)"/></g></svg></div>
+    <div className="flower-art" aria-hidden="true"><svg viewBox="0 0 260 260" role="presentation">
+      <path d="M130 17C167-7 210 7 220 43c9 32-8 58-31 87 29 24 55 54 46 88-10 39-56 47-105 17-42 31-91 32-112 1-21-31-6-70 28-106C13 99 1 57 25 27 49-3 88 2 130 17Z" fill="#2cbd88" stroke="#111" strokeWidth="2" strokeLinejoin="round"/>
+      <g fill="#111">
+        <ellipse cx="101" cy="73" rx="8" ry="11"/><ellipse cx="157" cy="73" rx="8" ry="11"/>
+        <circle cx="104" cy="69" r="2.5" fill="#fff"/><circle cx="160" cy="69" r="2.5" fill="#fff"/>
+      </g>
+      <path d="M105 103Q130 126 155 103" fill="none" stroke="#111" strokeWidth="5" strokeLinecap="round"/>
+    </svg></div>
     <div className="flower-copy"><span>GOOD VIDEOS ARE BETTER TOGETHER</span><h2 id="flower-contact-title">PLAY IT<br />TOGETHER</h2><p>Bring your favorite video and your favorite people. We’ll keep everyone watching in sync, wherever they are.</p><div className="flower-actions"><button onClick={onCreate}>START A WATCHPARTY <ArrowUpRight size={16}/></button><button onClick={onJoin}>JOIN WITH A ROOM CODE <ArrowRight size={15}/></button></div></div>
   </section>;
 }
