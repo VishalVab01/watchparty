@@ -2,7 +2,7 @@ services:
   - type: web
     name: watchparty
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
@@ -14,4 +14,13 @@ services:
       - key: DATABASE_SSL
         value: "false"
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: watchparty-db
+          property: connectionString
+
+databases:
+  - name: watchparty-db
+    databaseName: watchparty
+    user: watchparty
+    plan: free
+    region: oregon
