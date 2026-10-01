@@ -265,8 +265,8 @@ function FeaturedWork({ onStream }: { onStream: (videoId: string) => void }) {
     return () => { context.revert(); stack.classList.remove('is-scroll-stack'); stack.querySelector('.work-card:last-of-type')?.classList.remove('is-final-layer'); };
   }, []);
   const cards = [
-    { title: 'Nach Bindani Dj Pe', date: 'TRENDING MUSIC · HARYANA', description: 'Masoom Sharma, Renuka Panwar, and Jaat Nia bring a high-energy Haryanvi track to this week’s watchlist.', videoId: 'AvS8ABt81Q8', tag: 'MUSIC VIDEO', tag2: 'TRENDING', color: 'cyan' },
-    { title: 'Nayyi Navelli · Official Trailer', date: 'TRENDING TRAILER', description: 'A new trailer featuring Yami Gautam and a fresh story reveal to stream together.', videoId: 'NPkMecGOxDc', tag: 'TRAILER', tag2: 'NEW RELEASE', color: 'ink' },
+    { title: 'The 100% Problem · Short Film', date: 'SHORT FILM · WATCHLIST', description: 'Settle in together for a short film on this week’s Watchparty list.', videoId: 'mAt3tNxjHUY', tag: 'SHORT FILM', tag2: 'WATCHLIST', color: 'cyan' },
+    { title: 'iPhone 18 Pro Max vs iPhone 17 Pro Max', date: 'TECH · PHONE COMPARISON', description: 'A Hindi comparison of the iPhone 18 Pro Max and iPhone 17 Pro Max to watch and discuss together.', videoId: 'Gludm2LhYT4', tag: 'TECH', tag2: 'HINDI', color: 'ink' },
     { title: 'BMSD 2026 · Qualifiers Week 3', date: 'TRENDING GAMING · LIVE', description: 'Catch the BGMI esports qualifiers together and follow every clutch moment in the room.', videoId: 'eirM68AnN78', tag: 'BGMI', tag2: 'ESPORTS', color: 'yellow' },
     { title: 'Jadal Zamana · Interval Theme', date: 'TRENDING MUSIC · TELUGU', description: 'Anirudh Ravichander’s powerful theme from The Paradise is made for a full-volume group listen.', videoId: 'bYN2t0AjVuE', tag: 'SOUNDTRACK', tag2: 'TRENDING', color: 'pink' },
   ];
