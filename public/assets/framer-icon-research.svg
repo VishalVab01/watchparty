@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 732 395">
+  <style>
+    @keyframes star-spin { to { transform: rotate(360deg); } }
+    .center-star { transform-box: fill-box; transform-origin: center; animation: star-spin 3.5s linear infinite; }
+    @media (prefers-reduced-motion: reduce) { .center-star { animation: none; } }
+  </style>
+  <path fill-rule="evenodd" d="M365.914 394.012C516.48 394.012 647.127 297.818 712.173 239.865C738.38 216.516 738.38 177.497 712.173 154.147C647.127 96.1942 516.48 0 365.914 0C215.348 0 84.702 96.1942 19.6557 154.147C-6.55192 177.497 -6.55188 216.516 19.6557 239.865C84.702 297.818 215.348 394.012 365.914 394.012ZM365.914 334.452C441.965 334.452 503.615 272.916 503.615 197.005C503.615 121.096 441.965 59.5597 365.914 59.5597C289.865 59.5597 228.215 121.096 228.215 197.005C228.215 272.916 289.865 334.452 365.914 334.452Z" fill="#fff"/>
+  <circle cx="366" cy="197" r="95" fill="#e21e5a"/>
+  <path class="center-star" d="M366 116 390 173 447 197 390 221 366 278 342 221 285 197 342 173Z" fill="#f2b82f"/>
+</svg>

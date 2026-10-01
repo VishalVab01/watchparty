@@ -13,5 +13,5 @@ export function hashToken(token: string) {
 }
 
 export function normalizeCode(value: string) {
-  return value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+  return value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 8);
 }

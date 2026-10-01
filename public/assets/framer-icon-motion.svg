@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    @keyframes bubble-grow { 0%, 100% { transform: scale(.72); } 50% { transform: scale(1.24); } }
+    .bubble { transform-box: fill-box; transform-origin: center; animation: bubble-grow 1.8s ease-in-out infinite; }
+    .bubble:nth-of-type(2) { animation-delay: .18s; }
+    .bubble:nth-of-type(3) { animation-delay: .34s; }
+    .bubble:nth-of-type(4) { animation-delay: .5s; }
+    .bubble:nth-of-type(5) { animation-delay: .66s; }
+    .bubble:nth-of-type(6) { animation-delay: .82s; }
+    .bubble:nth-of-type(7) { animation-delay: .98s; }
+    @media (prefers-reduced-motion: reduce) { .bubble { animation: none; } }
+  </style>
+  <circle class="bubble" cx="18" cy="19" r="9" fill="#e21e5a"/>
+  <circle class="bubble" cx="80" cy="23" r="4" fill="#e21e5a"/>
+  <circle class="bubble" cx="50" cy="42" r="3" fill="#111"/>
+  <circle class="bubble" cx="40" cy="65" r="5" fill="#111"/>
+  <circle class="bubble" cx="75" cy="65" r="10" fill="#111"/>
+  <circle class="bubble" cx="19" cy="86" r="4" fill="#e21e5a"/>
+  <circle class="bubble" cx="88" cy="88" r="9" fill="#e21e5a"/>
+</svg>

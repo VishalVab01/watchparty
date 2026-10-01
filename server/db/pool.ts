@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
-  max: 10,
+  max: Number(process.env.PG_POOL_MAX || 10),
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,
 });
@@ -11,6 +11,14 @@ export const pool = new Pool({
 pool.on('error', (error) => console.error('Unexpected PostgreSQL pool error', error));
 
 export async function initializeDatabase() {
+  await pool.query(`CREATE TABLE IF NOT EXISTS accounts (
+    id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name VARCHAR(32) NOT NULL,
+    password_hash TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS account_sessions (
+    token_hash CHAR(64) PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+    expires_at TIMESTAMPTZ NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`);
   await pool.query(`CREATE TABLE IF NOT EXISTS rooms (
     id TEXT PRIMARY KEY,
     code VARCHAR(8) UNIQUE NOT NULL,
@@ -36,5 +44,12 @@ export async function initializeDatabase() {
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`);
   await pool.query('CREATE INDEX IF NOT EXISTS participants_room_idx ON participants(room_id)');
+  await pool.query('ALTER TABLE participants ADD COLUMN IF NOT EXISTS account_id TEXT REFERENCES accounts(id) ON DELETE SET NULL');
+  await pool.query('CREATE INDEX IF NOT EXISTS participants_account_idx ON participants(account_id)');
+  await pool.query(`CREATE TABLE IF NOT EXISTS room_requests (
+    id TEXT PRIMARY KEY, room_id TEXT NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL REFERENCES participants(id) ON DELETE CASCADE, username VARCHAR(32) NOT NULL,
+    action VARCHAR(16) NOT NULL, payload JSONB, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`);
   await pool.query('CREATE INDEX IF NOT EXISTS rooms_created_idx ON rooms(created_at DESC)');
 }

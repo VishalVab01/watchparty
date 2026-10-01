@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g fill="#111">
+    <path d="M43 14h16v29H43z" transform="rotate(-18 51 29)"/>
+    <path d="M57 43h29v16H57z" transform="rotate(-18 71 51)"/>
+    <path d="M43 57h16v29H43z" transform="rotate(-18 51 71)"/>
+    <path d="M14 43h29v16H14z" transform="rotate(-18 29 51)"/>
+  </g>
+</svg>

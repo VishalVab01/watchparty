@@ -19,7 +19,7 @@ Run `npm run build`, then `npm start`. The Express server serves the compiled Re
 
 ### Render deployment
 
-`render.yaml` describes the always-on Node service. Before deploying, create a PostgreSQL database in Render and set `DATABASE_URL` to its connection string in the web service's environment. `DATABASE_SSL=true` enables certificate-verified TLS; keep the provider's CA certificate trusted by Node. Set `CLIENT_ORIGIN` to the public app origin if the frontend is hosted separately. With the included single-service setup, the default is `https://watchparty.onrender.com`.
+`render.yaml` describes the always-on Node service. Before deploying, create a PostgreSQL database in Render and set `DATABASE_URL` to its connection string in the web service's environment. `DATABASE_SSL=true` enables certificate-verified TLS; keep the provider's CA certificate trusted by Node. Set `CLIENT_ORIGIN` to the public app origin if the frontend is hosted separately. With the included single-service setup, the default is `https://watchparty.onrender.com`. Create an account to start or join a room. Configure `REDIS_URL` from a managed Redis-compatible service before scaling to multiple app instances; without it, Socket.IO's adapter is process-local.
 
 The Render web service is configured on its always-on Starter plan, which may incur hosting charges. Check the current service and PostgreSQL pricing before provisioning anything.
 
@@ -31,31 +31,34 @@ The repository does not contain live deployment credentials or a provisioned dat
 
 - The React + TypeScript client embeds YouTube's IFrame Player API. It uses a small custom control bar so playback actions pass through the room server first.
 - Express provides room creation, room joining, a health endpoint, and the built frontend. PostgreSQL stores room state and participant identity/roles.
-- Socket.IO carries room state and user actions in both directions. The server authenticates each socket with a random, per-participant token; only a SHA-256 token hash is stored in PostgreSQL. Roles are looked up by the server and checked again for every privileged action.
+- Socket.IO carries room state and user actions in both directions. Email/password accounts use scrypt password hashes and random session tokens; room sockets require both the account session and room-member token. Only token hashes are stored in PostgreSQL. Roles are looked up by the server for privileged actions.
 - The host can promote participants to moderator or remove them. Moderators share playback and request-approval controls. Participant changes are queued as requests and are applied only after a host or moderator approves.
 - While playback is running, the host or a moderator sends periodic playback-time updates. The server persists those updates and broadcasts the timestamp so new or lagging viewers can catch up.
-- Chat is sent through the same room socket and is held in memory for the current session; room and role information is stored in PostgreSQL.
+- Chat and reactions are sent through the room socket. Host transfer updates the participant roles and room owner in one database transaction. Room state and pending playback requests are stored in PostgreSQL.
+- The realtime domain includes `Room`, `Participant`, and `MessageHandler` classes. Redis Pub/Sub through the Socket.IO Redis adapter carries room broadcasts across app instances; PostgreSQL remains the source of truth for room state, membership, roles, and pending requests.
 
 ## Event and role flow
 
-1. A client creates or joins a room over HTTP and receives a random session token.
-2. Socket.IO checks the token against its hash in PostgreSQL, resolves the participant's real role, and adds that participant to the room.
+1. A client registers or signs in, then creates or joins a room over HTTP and receives account and room session tokens.
+2. Socket.IO validates both tokens against their hashes in PostgreSQL, resolves the participant's real role, and adds that participant to the room.
 3. A host or moderator's play, pause, seek, or video-change event is validated, saved, and broadcast as a fresh room snapshot.
 4. A participant's requested action is sent to the host/moderator queue. The server applies the action only after an authorized approval event.
 5. Role assignment and removal are host-only events. The server updates PostgreSQL and broadcasts the current participant list.
+6. The host can transfer ownership to an online room participant; the server changes both participant roles and the room owner atomically. Room reactions are validated and broadcast to everyone.
 
 ## Code walkthrough
 
 - `src/ui/App.tsx`: landing page, room entry, player, participant controls, and chat.
 - `src/ui/styles.css`: responsive visual system and the warm editorial direction inspired by the supplied Nudge portfolio template; GSAP animates the entry elements. The landing illustration frames the people photograph served by the template's Framer CDN.
-- `server/index.ts`: HTTP routes, Socket.IO authentication, role enforcement, room events, and approval flow.
+- `server/index.ts`: account and room HTTP routes, Socket.IO auth/adapter setup, role enforcement, host transfer, room events, and approval flow.
 - `server/db/pool.ts`: PostgreSQL connection pool and schema initialization.
 - `render.yaml`: starting point for a persistent Render web service. Add a database connection string in the deployment environment before going live.
 
 ## Important product limits
 
-- Guests do not need accounts. The browser keeps a room token in session storage; clearing that browser session means joining again.
+- The browser keeps account and room tokens in session storage; clearing that browser session requires signing in and rejoining.
 - YouTube availability, region rules, embeds, and autoplay restrictions are controlled by YouTube and the browser. A viewer may need to interact with the player before sound can start.
-- Room/role metadata and the latest playback position persist in PostgreSQL. Presence and chat messages are live, in-memory Socket.IO state. A server restart disconnects everyone and clears chat, but room participants can reconnect with their session tokens.
-- Each service process manages its connected sockets directly. Supporting multiple backend instances will require a shared Socket.IO adapter such as Redis and a shared online-presence store.
+- Room/role metadata, playback position, and pending requests persist in PostgreSQL. Presence is derived from connected sockets. For multiple instances, Redis shares Socket.IO broadcasts and remote socket discovery; use a load balancer configured for WebSocket upgrades and size PostgreSQL/Redis for the expected connection count.
+- The assessment's 1,000+ concurrent-user target is a capacity goal, not a measured guarantee. Validate it with a load test on the selected hosting/database/Redis plans, and tune `PG_POOL_MAX` against the database connection limit (total pool capacity is instances × pool size). A connection pooler is recommended at higher instance counts.
+- A single backend instance works without Redis. Multiple backend instances require `REDIS_URL`; the Redis adapter shares broadcasts and online-socket discovery across the instances.
 # watchparty
