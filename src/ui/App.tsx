@@ -58,10 +58,12 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lenis = new Lenis({ autoRaf: false, anchors: true });
+    lenisRef.current = lenis;
     const updateScrollTrigger = () => ScrollTrigger.update();
     const tick = (time: number) => lenis.raf(time * 1000);
     lenis.on('scroll', updateScrollTrigger);
@@ -72,6 +74,7 @@ export default function App() {
       gsap.ticker.remove(tick);
       gsap.ticker.lagSmoothing(500, 33);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 
@@ -94,7 +97,7 @@ export default function App() {
       }
       const appearTargets = gsap.utils.toArray<HTMLElement>([
         '.folio-hero > .folio-clock', '.folio-hero > .folio-status',
-        '.about-canvas > *', '.about-more > *',
+        '.about-canvas > *', '.about-more > *', '.how-hero > *', '.how-step', '.how-cta > *',
         '.featured-heading > span', '.featured-heading-title > *',
         '.flower-art', '.flower-copy > *',
         '.party-profile', '.party-contact-button', '.party-caption',
@@ -121,6 +124,29 @@ export default function App() {
   const showToast = useCallback((message: string) => { setToast(message); window.setTimeout(() => setToast(''), 2800); }, []);
   const navigateRoom = useCallback((code: string) => { window.history.pushState({}, '', `/room/${code}`); window.scrollTo(0, 0); setPath(`/room/${code}`); setModal(null); }, []);
   const leaveRoom = useCallback(() => { window.history.pushState({}, '', '/'); setPath('/'); }, []);
+  const navigateHow = useCallback(() => {
+    window.history.pushState({}, '', '/how-it-works');
+    setPath('/how-it-works');
+    setMenuOpen(false);
+    lenisRef.current?.scrollTo(0, { immediate: true });
+  }, []);
+  const navigateFeatured = useCallback(() => {
+    const alreadyHome = window.location.pathname === '/';
+    window.history.pushState({}, '', '/#featured-work');
+    setMenuOpen(false);
+    if (alreadyHome) {
+      const target = document.getElementById('featured-work');
+      if (target && lenisRef.current) lenisRef.current.scrollTo(target, { offset: -24 });
+      else target?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    setPath('/');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const target = document.getElementById('featured-work');
+      if (target && lenisRef.current) lenisRef.current.scrollTo(target, { offset: -24 });
+      else target?.scrollIntoView({ behavior: 'smooth' });
+    }));
+  }, []);
   const roomCode = path.match(/^\/room\/([a-zA-Z0-9_-]+)\/?$/)?.[1]?.toUpperCase();
   const session = useMemo(() => roomCode ? (enteredSession?.code === roomCode ? enteredSession : getSession(roomCode)) : null, [roomCode, enteredSession]);
 
@@ -129,12 +155,12 @@ export default function App() {
   }, [roomCode, session]);
 
   return <div ref={root} className="app-shell min-h-screen bg-paper font-sans antialiased">
-    {roomCode && session ? <Room session={session} onLeave={leaveRoom} showToast={showToast} initialVideoId={featuredVideoId} onInitialVideoHandled={() => setFeaturedVideoId(null)} /> : path === '/about' ? <><AboutPage menuOpen={menuOpen} setMenuOpen={setMenuOpen} onHome={leaveRoom} onCreate={() => setModal('create')} onJoin={() => setModal('join')} />{modal && <EntryModal mode={modal} onClose={() => { setModal(null); setFeaturedVideoId(null); }} onComplete={(s) => { storeSession(s); setEnteredSession(s); navigateRoom(s.code); }} />}{toast && <Toast text={toast} />}</> : <>
+    {roomCode && session ? <Room session={session} onLeave={leaveRoom} showToast={showToast} initialVideoId={featuredVideoId} onInitialVideoHandled={() => setFeaturedVideoId(null)} /> : path === '/about' ? <><AboutPage menuOpen={menuOpen} setMenuOpen={setMenuOpen} onHome={leaveRoom} onCreate={() => setModal('create')} onJoin={() => setModal('join')} onFeatured={navigateFeatured} onHow={navigateHow} />{modal && <EntryModal mode={modal} onClose={() => { setModal(null); setFeaturedVideoId(null); }} onComplete={(s) => { storeSession(s); setEnteredSession(s); navigateRoom(s.code); }} />}{toast && <Toast text={toast} />}</> : path === '/how-it-works' ? <><HowItWorksPage menuOpen={menuOpen} setMenuOpen={setMenuOpen} onHome={leaveRoom} onCreate={() => setModal('create')} onJoin={() => setModal('join')} onFeatured={navigateFeatured} onHow={navigateHow} />{modal && <EntryModal mode={modal} onClose={() => { setModal(null); setFeaturedVideoId(null); }} onComplete={(s) => { storeSession(s); setEnteredSession(s); navigateRoom(s.code); }} />}{toast && <Toast text={toast} />}</> : <>
       <div className="folio-page">
         <header className="folio-nav">
           <a className="folio-logo" href="/" aria-label="Watchparty home" onClick={(e) => { e.preventDefault(); leaveRoom(); }}><img src="/assets/nudge-logo.svg" alt="" /></a>
           <nav className={`folio-links ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
-            <a className="active" href="#top"><span>⌂</span> HOME</a><a href="/about" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); setPath('/about'); setMenuOpen(false); }}><span>✿</span> ABOUT</a><a href="#featured-work" onClick={() => setMenuOpen(false)}><span>▣</span> THE GOOD STUFF</a><a href="#featured-work" onClick={() => setMenuOpen(false)}><span>✣</span> HOW IT WORKS</a>
+            <a className="active" href="#top" onClick={() => setMenuOpen(false)}><span>⌂</span> HOME</a><a href="/about" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); setPath('/about'); setMenuOpen(false); }}><span>✿</span> ABOUT</a><a href="/#featured-work" onClick={(e) => { e.preventDefault(); navigateFeatured(); }}><span>▣</span> THE GOOD STUFF</a><a href="/how-it-works" onClick={(e) => { e.preventDefault(); navigateHow(); }}><span>✣</span> HOW IT WORKS</a>
           </nav>
           <div className="folio-nav-actions"><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={() => setModal('create')}>♥ &nbsp; START A PARTY</button></div>
           <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
@@ -163,17 +189,53 @@ export default function App() {
   </div>;
 }
 
-function AboutPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin }: { menuOpen: boolean; setMenuOpen: (open: boolean) => void; onHome: () => void; onCreate: () => void; onJoin: () => void }) {
+function AboutPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin, onFeatured, onHow }: { menuOpen: boolean; setMenuOpen: (open: boolean) => void; onHome: () => void; onCreate: () => void; onJoin: () => void; onFeatured: () => void; onHow: () => void }) {
   return <div className="folio-page about-page">
     <header className="folio-nav">
       <a className="folio-logo" href="/" aria-label="Watchparty home" onClick={(e) => { e.preventDefault(); onHome(); }}><img src="/assets/nudge-logo.svg" alt="" /></a>
       <nav className={`folio-links ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
-        <a href="/" onClick={(e) => { e.preventDefault(); onHome(); }}><span>⌂</span> HOME</a><a className="active" href="/about"><span>✿</span> ABOUT</a><a href="/#featured-work" onClick={() => setMenuOpen(false)}><span>▣</span> THE GOOD STUFF</a><a href="/#featured-work" onClick={() => setMenuOpen(false)}><span>✣</span> HOW IT WORKS</a>
+        <a href="/" onClick={(e) => { e.preventDefault(); onHome(); }}><span>⌂</span> HOME</a><a className="active" href="/about"><span>✿</span> ABOUT</a><a href="/#featured-work" onClick={(e) => { e.preventDefault(); onFeatured(); }}><span>▣</span> THE GOOD STUFF</a><a href="/how-it-works" onClick={(e) => { e.preventDefault(); onHow(); }}><span>✣</span> HOW IT WORKS</a>
       </nav>
       <div className="folio-nav-actions"><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={onCreate}>♥ &nbsp; START A PARTY</button></div>
       <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
     </header>
     <AboutShowcase onCreate={onCreate} onJoin={onJoin} />
+    <footer className="folio-footer"><span>WATCHPARTY © 2025</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
+    <CustomCursor />
+  </div>;
+}
+
+function HowItWorksPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin, onFeatured, onHow }: { menuOpen: boolean; setMenuOpen: (open: boolean) => void; onHome: () => void; onCreate: () => void; onJoin: () => void; onFeatured: () => void; onHow: () => void }) {
+  const steps = [
+    { number: '01', icon: <Users size={24} />, title: 'Make a room', text: 'Start a party and choose your name. We’ll make a room code you can share with your friends.', note: 'YOUR ROOM, YOUR PEOPLE' },
+    { number: '02', icon: <Link2 size={24} />, title: 'Pick a video', text: 'Paste a YouTube link in the room, or start with one of the featured picks on the home page.', note: 'ANY YOUTUBE LINK' },
+    { number: '03', icon: <Play size={24} />, title: 'Hit play together', text: 'Everyone watches the same moment in sync. The host can play, pause, and keep the room moving.', note: 'ONE PLAY BUTTON' },
+    { number: '04', icon: <MessageCircle size={24} />, title: 'Make it a hangout', text: 'Chat while you watch, invite more people, and send video requests for what comes next.', note: 'STAY IN THE MOMENT' },
+  ];
+  return <div className="folio-page how-page">
+    <header className="folio-nav">
+      <a className="folio-logo" href="/" aria-label="Watchparty home" onClick={(e) => { e.preventDefault(); onHome(); }}><img src="/assets/nudge-logo.svg" alt="" /></a>
+      <nav className={`folio-links ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
+        <a href="/" onClick={(e) => { e.preventDefault(); onHome(); }}><span>⌂</span> HOME</a><a href="/about" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); window.dispatchEvent(new PopStateEvent('popstate')); setMenuOpen(false); }}><span>✿</span> ABOUT</a><a href="/#featured-work" onClick={(e) => { e.preventDefault(); onFeatured(); }}><span>▣</span> THE GOOD STUFF</a><a className="active" href="/how-it-works" onClick={(e) => { e.preventDefault(); onHow(); }}><span>✣</span> HOW IT WORKS</a>
+      </nav>
+      <div className="folio-nav-actions"><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={onCreate}>♥ &nbsp; START A PARTY</button></div>
+      <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
+    </header>
+    <main className="how-main">
+      <section className="how-hero">
+        <span className="how-eyebrow"><i /> THE WATCHPARTY FIELD GUIDE&nbsp; ✳ &nbsp;01—04</span>
+        <h1>Good videos.<br /><em>Better together.</em></h1>
+        <p>Four little steps from “what should we watch?” to watching it together.</p>
+        <span className="how-doodle" aria-hidden="true">✳</span>
+      </section>
+      <section className="how-steps" aria-label="How Watchparty works">
+        {steps.map((step) => <article className="how-step" key={step.number}>
+          <div className="how-step-top"><span className="how-step-number">{step.number}</span><span className="how-step-icon">{step.icon}</span></div>
+          <h2>{step.title}</h2><p>{step.text}</p><span className="how-step-note">{step.note}</span>
+        </article>)}
+      </section>
+      <section className="how-cta"><span>THAT’S THE WHOLE THING</span><h2>Now, who’s<br /><em>watching with you?</em></h2><div><button onClick={onCreate}>START A PARTY <ArrowRight size={16} /></button><button onClick={onJoin}>JOIN WITH A CODE <ArrowUpRight size={16} /></button></div></section>
+    </main>
     <footer className="folio-footer"><span>WATCHPARTY © 2025</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
     <CustomCursor />
   </div>;
