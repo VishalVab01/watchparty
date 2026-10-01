@@ -180,7 +180,7 @@ export default function App() {
           <FlowerContact onCreate={() => setModal('create')} onJoin={() => setModal('join')} />
           <PartyContact onCreate={() => setModal('create')} />
         </main>
-        <footer className="folio-footer"><span>watchparty2026</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={() => setModal('join')}>JOIN A PARTY ↗</button></footer>
+        <footer className="folio-footer"><span>WATCHPARTY@WEB3TASK</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={() => setModal('join')}>JOIN A PARTY ↗</button></footer>
         <CustomCursor />
       </div>
       {modal && <EntryModal mode={modal} onClose={() => { setModal(null); setFeaturedVideoId(null); }} onComplete={(s) => { storeSession(s); setEnteredSession(s); navigateRoom(s.code); }} />}
@@ -200,7 +200,7 @@ function AboutPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin, onFeatured
       <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
     </header>
     <AboutShowcase onCreate={onCreate} onJoin={onJoin} />
-    <footer className="folio-footer"><span>watchparty2026</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
+    <footer className="folio-footer"><span>WATCHPARTY@WEB3TASK</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
     <CustomCursor />
   </div>;
 }
@@ -236,7 +236,7 @@ function HowItWorksPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin, onFea
       </section>
       <section className="how-cta"><span>THAT’S THE WHOLE THING</span><h2>Now, who’s<br /><em>watching with you?</em></h2><div><button onClick={onCreate}>START A PARTY <ArrowRight size={16} /></button><button onClick={onJoin}>JOIN WITH A CODE <ArrowUpRight size={16} /></button></div></section>
     </main>
-    <footer className="folio-footer"><span>watchparty2026</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
+    <footer className="folio-footer"><span>WATCHPARTY@WEB3TASK</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
     <CustomCursor />
   </div>;
 }
@@ -353,7 +353,6 @@ function FlowerContact({ onCreate, onJoin }: { onCreate: () => void; onJoin: () 
         <ellipse cx="101" cy="73" rx="8" ry="11"/><ellipse cx="157" cy="73" rx="8" ry="11"/>
         <circle cx="104" cy="69" r="2.5" fill="#fff"/><circle cx="160" cy="69" r="2.5" fill="#fff"/>
       </g>
-      <path d="M105 103Q130 126 155 103" fill="none" stroke="#111" strokeWidth="5" strokeLinecap="round"/>
     </svg></div>
     <div className="flower-copy"><span>GOOD VIDEOS ARE BETTER TOGETHER</span><h2 id="flower-contact-title">PLAY IT<br />TOGETHER</h2><p>Bring your favorite video and your favorite people. We’ll keep everyone watching in sync, wherever they are.</p><div className="flower-actions"><button onClick={onCreate}>START A WATCHPARTY <ArrowUpRight size={16}/></button><button onClick={onJoin}>JOIN WITH A ROOM CODE <ArrowRight size={15}/></button></div></div>
   </section>;
