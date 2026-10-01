@@ -202,6 +202,7 @@ app.get('/api/rooms/:code', asyncRoute(async (req, res) => {
 
 app.use(express.static(resolve(process.cwd(), 'dist'), { maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0 }));
 app.get('/room/:code', (_req, res) => res.sendFile(resolve(process.cwd(), 'dist', 'index.html')));
+app.get(['/about', '/how-it-works'], (_req, res) => res.sendFile(resolve(process.cwd(), 'dist', 'index.html')));
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Unhandled HTTP error', error);
   if (!res.headersSent) res.status(500).json({ error: 'Something went wrong. Please try again.' });
