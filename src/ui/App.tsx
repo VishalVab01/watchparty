@@ -136,7 +136,7 @@ export default function App() {
           <nav className={`folio-links ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
             <a className="active" href="#top"><span>⌂</span> HOME</a><a href="/about" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); setPath('/about'); setMenuOpen(false); }}><span>✿</span> ABOUT</a><a href="#featured-work" onClick={() => setMenuOpen(false)}><span>▣</span> THE GOOD STUFF</a><a href="#featured-work" onClick={() => setMenuOpen(false)}><span>✣</span> HOW IT WORKS</a>
           </nav>
-          <div className="folio-nav-actions"><span className="nav-chip">SYNC</span><span className="nav-chip">SOCIAL</span><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={() => setModal('create')}>♥ &nbsp; START A PARTY</button></div>
+          <div className="folio-nav-actions"><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={() => setModal('create')}>♥ &nbsp; START A PARTY</button></div>
           <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         </header>
         <div className="folio-ruler" aria-hidden="true"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span><span>700</span><span>800</span><span>900</span><span>1000</span><span>1100</span><span>1200</span><span>1300</span><span>1400</span><span>1500</span></div>
@@ -170,7 +170,7 @@ function AboutPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin }: { menuOp
       <nav className={`folio-links ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
         <a href="/" onClick={(e) => { e.preventDefault(); onHome(); }}><span>⌂</span> HOME</a><a className="active" href="/about"><span>✿</span> ABOUT</a><a href="/#featured-work" onClick={() => setMenuOpen(false)}><span>▣</span> THE GOOD STUFF</a><a href="/#featured-work" onClick={() => setMenuOpen(false)}><span>✣</span> HOW IT WORKS</a>
       </nav>
-      <div className="folio-nav-actions"><span className="nav-chip">SYNC</span><span className="nav-chip">SOCIAL</span><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={onCreate}>♥ &nbsp; START A PARTY</button></div>
+      <div className="folio-nav-actions"><span className="folio-avatar"><img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="Watchparty host" /></span><button onClick={onCreate}>♥ &nbsp; START A PARTY</button></div>
       <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
     </header>
     <AboutShowcase onCreate={onCreate} onJoin={onJoin} />
@@ -284,17 +284,15 @@ function FeaturedWork({ onStream }: { onStream: (videoId: string) => void }) {
 }
 
 function FlowerContact({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => void }) {
-  const flower = useRef<SVGSVGElement>(null);
-  const eyes = useRef<SVGGElement>(null);
+  const petals = useRef<SVGGElement>(null);
   useEffect(() => {
-    if (!flower.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const spin = gsap.to(flower.current, { rotation: 360, duration: 1.6, ease: 'power2.inOut', repeat: -1, repeatDelay: 2.5, transformOrigin: '50% 50%' });
-    const blink = eyes.current && gsap.to(eyes.current, { scaleY: 0.08, duration: 0.12, transformOrigin: '50% 50%', repeat: -1, repeatDelay: 2.6, yoyo: true, ease: 'power1.inOut' });
-    return () => { spin.kill(); blink?.kill(); };
+    if (!petals.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const spin = gsap.to(petals.current, { rotation: 360, duration: 9, ease: 'none', repeat: -1, transformOrigin: '50% 50%' });
+    return () => { spin.kill(); };
   }, []);
   return <section className="flower-contact" aria-labelledby="flower-contact-title">
-    <div className="flower-art" aria-hidden="true"><svg ref={flower} viewBox="0 0 260 260" role="presentation"><path d="M130 17C167-7 210 7 220 43c9 32-8 58-31 87 29 24 55 54 46 88-10 39-56 47-105 17-42 31-91 32-112 1-21-31-6-70 28-106C13 99 1 57 25 27 49-3 88 2 130 17Z" fill="#2cbd88" stroke="#111" strokeWidth="2" strokeLinejoin="round"/><g ref={eyes}><rect x="129" y="99" width="49" height="15" rx="8" fill="#111" transform="rotate(-12 129 99)"/><rect x="134" y="137" width="49" height="15" rx="8" fill="#111" transform="rotate(-12 134 137)"/></g></svg></div>
-    <div className="flower-copy"><span>ONE MORE THING</span><h2 id="flower-contact-title">LET’S TALK</h2><p>Stream any YouTube video in sync, invite your people, and enjoy it together from anywhere.</p><div className="flower-actions"><button onClick={onCreate}>START A WATCHPARTY <ArrowUpRight size={16}/></button><button onClick={onJoin}>GOT AN INVITE CODE? <ArrowRight size={15}/></button></div></div>
+    <div className="flower-art" aria-hidden="true"><svg viewBox="0 0 260 260" role="presentation"><g ref={petals} stroke="#111" strokeWidth="3" strokeLinejoin="round"><ellipse cx="130" cy="72" rx="31" ry="55" fill="#35c2e8"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#2cbd88" transform="rotate(45 130 130)"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#f5bd32" transform="rotate(90 130 130)"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#e82060" transform="rotate(135 130 130)"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#35c2e8" transform="rotate(180 130 130)"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#2cbd88" transform="rotate(225 130 130)"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#f5bd32" transform="rotate(270 130 130)"/><ellipse cx="130" cy="72" rx="31" ry="55" fill="#e82060" transform="rotate(315 130 130)"/></g><circle cx="130" cy="130" r="43" fill="#fffdf5" stroke="#111" strokeWidth="3"/><ellipse cx="115" cy="125" rx="4" ry="7" fill="#111"/><ellipse cx="145" cy="125" rx="4" ry="7" fill="#111"/><path d="M119 143q11 12 22 0" fill="none" stroke="#111" strokeWidth="3" strokeLinecap="round"/></svg></div>
+    <div className="flower-copy"><span>GOOD VIDEOS ARE BETTER TOGETHER</span><h2 id="flower-contact-title">PLAY IT<br />TOGETHER</h2><p>Bring your favorite video and your favorite people. We’ll keep everyone watching in sync, wherever they are.</p><div className="flower-actions"><button onClick={onCreate}>START A WATCHPARTY <ArrowUpRight size={16}/></button><button onClick={onJoin}>JOIN WITH A ROOM CODE <ArrowRight size={15}/></button></div></div>
   </section>;
 }
 
@@ -624,7 +622,7 @@ function Room({ session, onLeave, showToast, initialVideoId, onInitialVideoHandl
       <nav className={`folio-links room-links ${roomMenuOpen ? 'open' : ''}`} aria-label="Room navigation">
         <a className="active" href="#room-watch" onClick={() => setRoomMenuOpen(false)}><span>▶</span> THE ROOM</a>
       </nav>
-      <div className="folio-nav-actions room-nav-actions"><span className="nav-chip room-sync-chip">SYNC</span><div className="room-live-pill"><span className={`live-dot ${connected ? '' : 'offline'}`} />{connected ? 'PARTY IS LIVE' : 'RECONNECTING'}</div><span className="folio-avatar room-avatar" aria-label={`Signed in as ${session.username}`}>{initials(session.username)}</span><button className="room-leave" onClick={onLeave}><LogOut size={15} /> Leave room</button></div>
+      <div className="folio-nav-actions room-nav-actions"><div className="room-live-pill"><span className={`live-dot ${connected ? '' : 'offline'}`} />{connected ? 'PARTY IS LIVE' : 'RECONNECTING'}</div><span className="folio-avatar room-avatar" aria-label={`Signed in as ${session.username}`}>{initials(session.username)}</span><button className="room-leave" onClick={onLeave}><LogOut size={15} /> Leave room</button></div>
       <button className="mobile-menu folio-menu room-menu-button" aria-label={roomMenuOpen ? 'Close room menu' : 'Open room menu'} aria-expanded={roomMenuOpen} onClick={() => setRoomMenuOpen(!roomMenuOpen)}>{roomMenuOpen ? <X /> : <Menu />}</button>
     </header>
     <div className="room-body page-width">
