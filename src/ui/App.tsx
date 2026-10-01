@@ -180,7 +180,7 @@ export default function App() {
           <FlowerContact onCreate={() => setModal('create')} onJoin={() => setModal('join')} />
           <PartyContact onCreate={() => setModal('create')} />
         </main>
-        <footer className="folio-footer"><span>WATCHPARTY © 2025</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={() => setModal('join')}>JOIN A PARTY ↗</button></footer>
+        <footer className="folio-footer"><span>watchparty2026</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={() => setModal('join')}>JOIN A PARTY ↗</button></footer>
         <CustomCursor />
       </div>
       {modal && <EntryModal mode={modal} onClose={() => { setModal(null); setFeaturedVideoId(null); }} onComplete={(s) => { storeSession(s); setEnteredSession(s); navigateRoom(s.code); }} />}
@@ -200,7 +200,7 @@ function AboutPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin, onFeatured
       <button className="mobile-menu folio-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
     </header>
     <AboutShowcase onCreate={onCreate} onJoin={onJoin} />
-    <footer className="folio-footer"><span>WATCHPARTY © 2025</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
+    <footer className="folio-footer"><span>watchparty2026</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
     <CustomCursor />
   </div>;
 }
@@ -236,7 +236,7 @@ function HowItWorksPage({ menuOpen, setMenuOpen, onHome, onCreate, onJoin, onFea
       </section>
       <section className="how-cta"><span>THAT’S THE WHOLE THING</span><h2>Now, who’s<br /><em>watching with you?</em></h2><div><button onClick={onCreate}>START A PARTY <ArrowRight size={16} /></button><button onClick={onJoin}>JOIN WITH A CODE <ArrowUpRight size={16} /></button></div></section>
     </main>
-    <footer className="folio-footer"><span>WATCHPARTY © 2025</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
+    <footer className="folio-footer"><span>watchparty2026</span><span>MADE FOR CLOSER, NOT LOUDER ♥</span><button onClick={onJoin}>JOIN A PARTY ↗</button></footer>
     <CustomCursor />
   </div>;
 }
