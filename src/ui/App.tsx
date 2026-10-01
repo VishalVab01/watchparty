@@ -195,7 +195,7 @@ function AboutShowcase({ onCreate, onJoin }: { onCreate: () => void; onJoin: () 
       <section className="about-canvas">
         <span className="about-scribble">about us!</span>
         <h1 className="about-question"><span>what's up</span></h1>
-        <figure className="about-polaroid polaroid-left"><img src="https://framerusercontent.com/images/veyOMFLFvf4bfZJKXrpyPNzQWiw.jpg?height=1603&width=2400" alt="Friends watching YouTube together" /><figcaption>your people</figcaption></figure>
+        <figure className="about-polaroid polaroid-left"><img src="/assets/friends-watchparty.jpg" alt="Four Indian friends laughing together while watching a video" /><figcaption>your people</figcaption></figure>
         <figure className="about-polaroid polaroid-right"><img src="https://framerusercontent.com/images/jaipCY5FvgftEDz3qtilGNnLVk.png?height=1024&width=683" alt="A cozy place to watch together" /><figcaption>your place</figcaption></figure>
         <span className="about-you"><i/>YOU</span>
         <p className="about-statement">We’re Watchparty <img src="https://framerusercontent.com/images/DxEColy2Zkko0WyVGe1jwbs7BpI.png?height=354&width=278" alt="A Watchparty member" /> a little corner of the internet that gets excited <b className="about-burst">✿</b> about bringing people together to stream YouTube in sync <b className="about-heart">♥</b>.</p>
