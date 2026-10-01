@@ -25,7 +25,7 @@ type PendingRequest = ClientRequest & { id: string; roomId: string; userId: stri
 
 const app = express();
 const server = createServer(app);
-const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+const clientOrigin = process.env.CLIENT_ORIGIN || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5173';
 app.use(cors({ origin: clientOrigin, credentials: true }));
 app.use(express.json({ limit: '16kb' }));
 const io = new Server(server, { cors: { origin: clientOrigin, methods: ['GET', 'POST'] }, maxHttpBufferSize: 1e5, pingTimeout: 20_000, pingInterval: 25_000 });
